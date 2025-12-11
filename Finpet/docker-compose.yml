@@ -1,0 +1,7 @@
+services:
+  finpet-sync:
+    build: .
+    container_name: finpet-sync
+    restart: unless-stopped
+    env_file:
+      - .env
