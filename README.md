@@ -6,7 +6,7 @@ Desenvolvimento de software focado em soluções robustas e eficientes.
 
 ## Sobre
 
-Somos uma equipe de desenvolvimento que prioriza código limpo, performance e simplicidade. Entendemos problemas a fundo antes de escrever a primeira linha de código.
+Somos uma equipe de desenvolvimento que prioriza código limpo, performance e simplicidade. Procuramos entender o problema a fundo antes de escrever a primeira linha de código.
 
 ---
 
