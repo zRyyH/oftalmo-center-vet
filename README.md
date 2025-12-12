@@ -1,12 +1,12 @@
-# Ryan Carlos Gadelha
+# AwpSoft
 
-Desenvolvedor de software focado em construir soluções robustas e eficientes.
+Desenvolvimento de software focado em soluções robustas e eficientes.
 
 ---
 
 ## Sobre
 
-Trabalho com desenvolvimento de software, priorizando código limpo, performance e simplicidade. Gosto de entender problemas a fundo antes de escrever a primeira linha de código.
+Somos uma equipe de desenvolvimento que prioriza código limpo, performance e simplicidade. Entendemos problemas a fundo antes de escrever a primeira linha de código.
 
 ---
 
@@ -21,7 +21,7 @@ Trabalho com desenvolvimento de software, priorizando código limpo, performance
 ## Contato
 
 - Email: contato@awpsoft.com.br
-- Whatsapp: +55 (88) 98163-2737
+- WhatsApp: +55 (88) 98163-2737
 
 ---
 
