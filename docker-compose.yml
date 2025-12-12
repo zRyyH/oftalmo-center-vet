@@ -1,0 +1,74 @@
+services:
+  finpet:
+    image: zryyh/finpetsync:latest
+    container_name: finpet-sync
+    restart: unless-stopped
+    environment:
+      - POCKETBASE_URL=${POCKETBASE_URL}
+      - POCKETBASE_EMAIL=${POCKETBASE_EMAIL}
+      - POCKETBASE_PASSWORD=${POCKETBASE_PASSWORD}
+      - COLLECTION_NAME=${COLLECTION_NAME}
+      - FINPET_EMAIL=${FINPET_EMAIL}
+      - FINPET_PASSWORD=${FINPET_PASSWORD}
+      - DAYS_RANGE=${DAYS_RANGE}
+      - SYNC_INTERVAL_MINUTES=${SYNC_INTERVAL_MINUTES}
+    volumes:
+      - finpet_logs:/app/logs
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  pocketbase:
+    image: zryyh/pocketbase:latest
+    container_name: pocketbase
+    restart: unless-stopped
+    volumes:
+      - pb_data:/pb/pb_data
+      - pb_public:/pb/pb_public
+    command: [ "/pb/pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--publicDir=/pb/pb_public" ]
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8090/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - pocketbase_network
+
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "81:81"
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    healthcheck:
+      test: [ "CMD", "/usr/bin/check-health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - pocketbase_network
+
+networks:
+  pocketbase_network:
+    driver: bridge
+
+volumes:
+  pb_data:
+    driver: local
+  finpet_logs:
+    driver: local
+  pb_public:
+    driver: local
+  npm_data:
+    driver: local
+  npm_letsencrypt:
+    driver: local
