@@ -20,8 +20,8 @@ Trabalho com desenvolvimento de software, priorizando código limpo, performance
 
 ## Contato
 
-- Email: seu@email.com
-- LinkedIn: [/in/seu-linkedin](https://linkedin.com/in/seu-linkedin)
+- Email: contato@awpsoft.com.br
+- Whatsapp: +55 (88) 98163-2737
 
 ---
 
