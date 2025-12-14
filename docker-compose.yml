@@ -1,24 +1,51 @@
+# SERVIÇO SICOOB PRECISA DO CAMINHO REAL DAS KEYS NO SISTEMA
+
 services:
+  releases:
+    image: zryyh/releasessync:latest
+    container_name: releases-sync
+    restart: unless-stopped
+    env_file:
+      - .env.local # DEFINIR .ENV
+    environment:
+      - POCKETBASE_URL=http://pocketbase:8090
+    networks:
+      - pocketbase_network
+
+  conciliations:
+    image: zryyh/conciliationssync:latest
+    container_name: conciliations-sync
+    restart: unless-stopped
+    env_file:
+      - .env.local # DEFINIR .ENV
+    environment:
+      - POCKETBASE_URL=http://pocketbase:8090
+    networks:
+      - pocketbase_network
+
+  sicoob:
+    image: zryyh/sicoobsync:latest
+    container_name: sicoob-sync
+    restart: unless-stopped
+    env_file:
+      - .env.local # DEFINIR .ENV
+    environment:
+      - POCKETBASE_URL=http://pocketbase:8090
+    volumes:
+      - ./keys:/app/keys:ro # AQUI DEVE SER DEFINIDA O CAMINHO DAS KEYS
+    networks:
+      - pocketbase_network
+
   finpet:
     image: zryyh/finpetsync:latest
     container_name: finpet-sync
     restart: unless-stopped
+    env_file:
+      - .env.local # DEFINIR .ENV
     environment:
-      - POCKETBASE_URL=${POCKETBASE_URL}
-      - POCKETBASE_EMAIL=${POCKETBASE_EMAIL}
-      - POCKETBASE_PASSWORD=${POCKETBASE_PASSWORD}
-      - COLLECTION_NAME=${COLLECTION_NAME}
-      - FINPET_EMAIL=${FINPET_EMAIL}
-      - FINPET_PASSWORD=${FINPET_PASSWORD}
-      - DAYS_RANGE=${DAYS_RANGE}
-      - SYNC_INTERVAL_MINUTES=${SYNC_INTERVAL_MINUTES}
-    volumes:
-      - finpet_logs:/app/logs
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - POCKETBASE_URL=http://pocketbase:8090
+    networks:
+      - pocketbase_network
 
   pocketbase:
     image: zryyh/pocketbase:latest
@@ -42,9 +69,9 @@ services:
     container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
+      - "127.0.0.1:81:81"
       - "80:80"
       - "443:443"
-      - "81:81"
     volumes:
       - npm_data:/data
       - npm_letsencrypt:/etc/letsencrypt
@@ -57,10 +84,6 @@ services:
     networks:
       - pocketbase_network
 
-networks:
-  pocketbase_network:
-    driver: bridge
-
 volumes:
   pb_data:
     driver: local
@@ -72,3 +95,7 @@ volumes:
     driver: local
   npm_letsencrypt:
     driver: local
+
+networks:
+  pocketbase_network:
+    driver: bridge

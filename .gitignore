@@ -4,6 +4,7 @@
 **/.env.*.local
 **/!.env.example
 **/*.json
+**/.vscode
 
 # Cache do Python
 **/__pycache__

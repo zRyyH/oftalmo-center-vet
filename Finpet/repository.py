@@ -3,7 +3,7 @@
 from pocketbase import PocketBase
 
 from config import (
-    COLLECTION_NAME,
+    COLLECTION_FINPET,
     POCKETBASE_URL,
     POCKETBASE_EMAIL,
     POCKETBASE_PASSWORD,
@@ -17,7 +17,7 @@ class FinpetRepository:
     def __init__(self):
         self.pb = PocketBase(POCKETBASE_URL)
         self.pb.admins.auth_with_password(POCKETBASE_EMAIL, POCKETBASE_PASSWORD)
-        self.collection = self.pb.collection(COLLECTION_NAME)
+        self.collection = self.pb.collection(COLLECTION_FINPET)
 
     def find_by_id_t(self, id_t: str):
         """Busca transação por id_t. Retorna o registro ou None."""

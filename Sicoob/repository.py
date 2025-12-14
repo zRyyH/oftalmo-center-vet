@@ -5,7 +5,7 @@ from config import (
     POCKETBASE_URL,
     POCKETBASE_EMAIL,
     POCKETBASE_PASSWORD,
-    COLLECTION_NAME,
+    COLLECTION_SICOOB,
 )
 from logger import log
 
@@ -13,9 +13,10 @@ from logger import log
 class ExtratoRepository:
 
     def __init__(self):
+        print(POCKETBASE_URL, POCKETBASE_EMAIL, POCKETBASE_PASSWORD, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         self.pb = PocketBase(POCKETBASE_URL)
         self.pb.admins.auth_with_password(POCKETBASE_EMAIL, POCKETBASE_PASSWORD)
-        self.collection = self.pb.collection(COLLECTION_NAME)
+        self.collection = self.pb.collection(COLLECTION_SICOOB)
 
     def find_by_transaction_id(self, transaction_id: str):
         try:
