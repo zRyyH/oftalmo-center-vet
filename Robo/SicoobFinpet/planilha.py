@@ -1,8 +1,8 @@
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+from collections import defaultdict
 from openpyxl import Workbook
 from datetime import datetime
-from collections import defaultdict
 
 
 HEADERS = [
@@ -170,12 +170,3 @@ def filtrar_periodo(itens: list, mes: int, ano: int) -> list:
         if data and data.month == mes and data.year == ano:
             resultado.append(item)
     return resultado
-
-
-def gerar_relatorio(dados: dict, mes: int, ano: int) -> str | None:
-    itens = filtrar_periodo(dados.get("itens", []), mes, ano)
-    if not itens:
-        return None
-    itens = ordenar_por_data(itens)
-    caminho = f"relatorios/sicoob_lancamento_{mes:02d}_{ano}.xlsx"
-    return criar_planilha(itens, caminho)

@@ -1,22 +1,16 @@
 from .planilha import criar_planilha
 from .conciliador import conciliar
 from .vinculador import vincular
-import json
 
 
-def executar_sicoob_finpet(dados: dict, caminho: str = "relatorios/sicoob_finpet.xlsx") -> list:
+def executar_sicoob_finpet(dados):
     sicoob = dados.get("sicoob", [])
     finpet = dados.get("finpet", [])
     brands = dados.get("brands", [])
 
     vinculados = vincular(sicoob, finpet, brands)
-    conciliacoes = conciliar(vinculados)
-    criar_planilha(conciliacoes, caminho)
+    resultado = conciliar(vinculados)
 
-    # with open("dados_sicoob_finpet.json", "w") as FileW:
-    #     FileW.write(json.dumps(dados, indent=4))
+    criar_planilha(resultado, "Relatorios/Sicoob Finpet.xlsx")
 
-    # with open("resultados_sicoob_finpet.json", "w") as FileW:
-    #     FileW.write(json.dumps(conciliacoes, indent=4))
-
-    return conciliacoes
+    return resultado

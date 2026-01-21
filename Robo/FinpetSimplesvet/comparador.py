@@ -104,7 +104,8 @@ def _comparar_valor(finpet: dict, release: dict) -> dict:
     return {
         "finpet": finpet.get("value"),
         "release": release.get("valor"),
-        "match": abs(v1 - v2) <= 0.05,
+        "exact_value": abs(v1 - v2) == 0,
+        "match": abs(v1 - v2) <= 1.00,
     }
 
 
@@ -134,11 +135,10 @@ def _comparar_auth(finpet: dict, descricao: str, is_supplier: bool) -> dict:
         }
 
     auth_match = auth_fp in auths_release if auth_fp else False
-    auth_rel = auth_fp if auth_match else (auths_release[0] if auths_release else None)
 
     return {
         "finpet": auth_fp or None,
-        "release": auth_rel,
+        "release": auth_fp if auth_match else None,
         "auths_encontrados": auths_release,
         "match": auth_match,
     }

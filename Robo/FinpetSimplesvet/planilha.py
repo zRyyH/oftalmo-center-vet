@@ -1,8 +1,8 @@
-from openpyxl import Workbook
 from openpyxl.styles import Alignment, PatternFill, Border, Side, Font
 from openpyxl.utils import get_column_letter
-from typing import List, Dict, Any
 from collections import defaultdict
+from typing import List, Dict, Any
+from openpyxl import Workbook
 
 
 def formatar_data(valor):
@@ -112,7 +112,7 @@ def aplicar_formatacao(ws, headers, dados_mes):
         ws.column_dimensions[get_column_letter(col_idx)].width = max_len + 2
 
 
-def gerar_excel(dados: List[Dict[str, Any]], caminho_saida: str = "resultados.xlsx"):
+def gerar_excel(dados: List[Dict[str, Any]], caminho):
     wb = Workbook()
     wb.remove(wb.active)
 
@@ -156,5 +156,5 @@ def gerar_excel(dados: List[Dict[str, Any]], caminho_saida: str = "resultados.xl
         ws = wb.create_sheet(title=nome_folha)
         aplicar_formatacao(ws, headers, dados_por_mes[mes_ano])
 
-    wb.save(caminho_saida)
-    return caminho_saida
+    wb.save(caminho)
+    return caminho

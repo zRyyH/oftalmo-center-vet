@@ -1,13 +1,11 @@
-from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from collections import defaultdict
 from datetime import datetime
+from openpyxl import Workbook
 
 
-def criar_planilha(
-    resultado: list, caminho: str = "relatorios/finpet_conciliacoes.xlsx"
-):
+def criar_planilha(resultado, caminho):
     wb = Workbook()
     wb.remove(wb.active)
 

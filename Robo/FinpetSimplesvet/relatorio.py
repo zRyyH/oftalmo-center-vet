@@ -2,7 +2,7 @@ from .planilha import gerar_excel
 from datetime import datetime
 
 
-def gerar_relatorio(dados: list, caminho: str = "relatorios/finpet_lancamentos.xlsx"):
+def gerar_relatorio(dados):
     if not dados:
         print("\nNenhum registro encontrado.")
         return
@@ -13,8 +13,8 @@ def gerar_relatorio(dados: list, caminho: str = "relatorios/finpet_lancamentos.x
         reverse=True,
     )
 
-    gerar_excel(dados, caminho)
-    print(f"\nArquivo: {caminho}")
+    gerar_excel(dados, "Relatorios/Finpet Lançamentos.xlsx")
+    print(f"\nArquivo: {"Relatorios/Finpet Lançamentos.xlsx"}")
     print(f"Registros: {len(dados)}")
 
 

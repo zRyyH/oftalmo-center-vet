@@ -1,10 +1,14 @@
+from pocketbase import PocketBase
+from pathlib import Path
 from config import (
     POCKETBASE_EMAIL,
     POCKETBASE_PASSWORD,
     POCKETBASE_URL,
 )
-from pocketbase import PocketBase
 import json
+
+
+Path("./Entradas").mkdir(exist_ok=True)
 
 
 class PocketBaseClient:
@@ -55,5 +59,10 @@ def get_data(limit=None, collections=[]):
             items = items[:limit]
 
         data[name] = serialize_items(items)
+
+    json_name = "_".join(collections)
+
+    with open(f"Entradas/{json_name}.json", "w") as FileW:
+        FileW.write(json.dumps(data, indent=4))
 
     return data

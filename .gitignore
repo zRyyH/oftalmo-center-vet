@@ -17,6 +17,7 @@
 **/.venv
 **/main.spec
 **/*.xlsx
+**/*.exe
 
 # Certificados e chaves
 **/*.crt

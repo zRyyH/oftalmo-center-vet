@@ -1,8 +1,8 @@
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+from collections import defaultdict
 from openpyxl import Workbook
 from datetime import datetime
-from collections import defaultdict
 
 
 HEADERS = [

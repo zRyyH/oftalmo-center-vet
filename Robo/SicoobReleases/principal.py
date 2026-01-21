@@ -1,21 +1,12 @@
 from .planilha import criar_planilha
 from .conciliador import conciliar
-import json
 
 
-def executar_sicoob_releases(
-    dados: dict, caminho: str = "relatorios/sicoob_lancamentos.xlsx"
-) -> dict:
+def executar_sicoob_releases(dados):
     resultado = conciliar(dados)
     itens = resultado.get("itens", [])
 
     if itens:
-        criar_planilha(itens, caminho)
-
-    # with open("dados_sicoob_lancamentos.json", "w") as FileW:
-    #     FileW.write(json.dumps(dados, indent=4))
-
-    # with open("resultados_sicoob_lancamentos.json", "w") as FileW:
-    #     FileW.write(json.dumps(resultado, indent=4))
+        criar_planilha(itens, "Relatorios/Sicoob Lançamentos.xlsx")
 
     return resultado
