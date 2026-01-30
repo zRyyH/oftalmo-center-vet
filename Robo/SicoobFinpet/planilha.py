@@ -18,55 +18,63 @@ HEADERS = [
 
 LARGURAS = [12, 12, 12, 16, 18, 35, 50, 18]
 
+BORDA = Border(
+    left=Side(style="thin", color="000000"),
+    right=Side(style="thin", color="000000"),
+    top=Side(style="thin", color="000000"),
+    bottom=Side(style="thin", color="000000"),
+)
 
-def criar_estilos() -> dict:
-    borda = Side(style="thin", color="808080")
-    return {
-        "header_font": Font(bold=True, color="000000", size=11),
-        "header_fill": PatternFill("solid", fgColor="90EE90"),
-        "cell_font": Font(size=10),
-        "cell_font_erro": Font(size=10, color="CC0000"),
-        "alt_fill": PatternFill("solid", fgColor="E8F5E9"),
-        "borda": Border(left=borda, right=borda, top=borda, bottom=borda),
-        "centro": Alignment(horizontal="center", vertical="center"),
-        "sim_fill": PatternFill("solid", fgColor="C6EFCE"),
-        "nao_fill": PatternFill("solid", fgColor="FFC7CE"),
-        "vazio_fill": PatternFill("solid", fgColor="FFCCCC"),
-    }
+ESTILOS = {
+    "header_font": Font(bold=True, size=11, color="FFFFFF"),
+    "header_fill": PatternFill("solid", fgColor="2E7D32"),
+    "cell_font": Font(size=10, color="212121"),
+    "zebra_fill": PatternFill("solid", fgColor="E8F5E9"),
+    "branco_fill": PatternFill("solid", fgColor="FFFFFF"),
+    "sim_fill": PatternFill("solid", fgColor="C8E6C9"),
+    "nao_fill": PatternFill("solid", fgColor="FFCDD2"),
+    "total_font": Font(bold=True, size=11, color="FFFFFF"),
+    "total_fill": PatternFill("solid", fgColor="37474F"),
+    "centro": Alignment(horizontal="center", vertical="center"),
+}
 
 
-def aplicar_header(ws, estilos: dict):
+def aplicar_header(ws):
     for col, nome in enumerate(HEADERS, 1):
-        celula = ws.cell(row=1, column=col, value=nome)
-        celula.font = estilos["header_font"]
-        celula.fill = estilos["header_fill"]
-        celula.alignment = estilos["centro"]
-        celula.border = estilos["borda"]
+        cel = ws.cell(row=1, column=col, value=nome)
+        cel.font = ESTILOS["header_font"]
+        cel.fill = ESTILOS["header_fill"]
+        cel.alignment = ESTILOS["centro"]
+        cel.border = BORDA
 
 
-def aplicar_linha(ws, linha: int, estilos: dict, conciliado: bool, zebra: bool = False):
+def aplicar_linha(ws, linha, conciliado, zebra=False):
     for col in range(1, len(HEADERS) + 1):
-        celula = ws.cell(row=linha, column=col)
-        celula.border = estilos["borda"]
-        celula.alignment = estilos["centro"]
+        cel = ws.cell(row=linha, column=col)
+        cel.font = ESTILOS["cell_font"]
+        cel.alignment = ESTILOS["centro"]
+        cel.border = BORDA
 
-        valor = celula.value
-        is_vazio = valor is None or valor == ""
-
-        if is_vazio:
-            celula.fill = estilos["vazio_fill"]
-            celula.font = estilos["cell_font"]
-        elif col == 3:
-            celula.fill = estilos["sim_fill"] if conciliado else estilos["nao_fill"]
-            celula.font = (
-                estilos["cell_font"] if conciliado else estilos["cell_font_erro"]
-            )
+        if col == 3:
+            cel.fill = ESTILOS["sim_fill"] if conciliado else ESTILOS["nao_fill"]
         else:
-            celula.font = (
-                estilos["cell_font"] if conciliado else estilos["cell_font_erro"]
-            )
-            if zebra:
-                celula.fill = estilos["alt_fill"]
+            cel.fill = ESTILOS["zebra_fill"] if zebra else ESTILOS["branco_fill"]
+
+        if col in [4, 5]:
+            cel.number_format = "R$ #,##0.00"
+
+
+def aplicar_totais(ws, linha, total_sicoob, total_erp):
+    for col in range(1, len(HEADERS) + 1):
+        cel = ws.cell(row=linha, column=col)
+        cel.font = ESTILOS["total_font"]
+        cel.fill = ESTILOS["total_fill"]
+        cel.alignment = ESTILOS["centro"]
+        cel.border = BORDA
+
+    ws.cell(row=linha, column=1, value="TOTAL")
+    ws.cell(row=linha, column=4, value=total_sicoob).number_format = "R$ #,##0.00"
+    ws.cell(row=linha, column=5, value=total_erp).number_format = "R$ #,##0.00"
 
 
 def aplicar_larguras(ws):
@@ -74,7 +82,7 @@ def aplicar_larguras(ws):
         ws.column_dimensions[get_column_letter(col)].width = largura
 
 
-def extrair_valores(item: dict) -> list:
+def extrair_valores(item):
     return [
         item.get("data_sicoob") or "",
         item.get("data_erp") or "",
@@ -87,7 +95,7 @@ def extrair_valores(item: dict) -> list:
     ]
 
 
-def parse_data(valor: str) -> datetime | None:
+def parse_data(valor):
     if not valor:
         return None
     for fmt in ["%Y-%m-%d", "%d/%m/%Y"]:
@@ -98,7 +106,7 @@ def parse_data(valor: str) -> datetime | None:
     return None
 
 
-def agrupar_por_mes(itens: list) -> dict:
+def agrupar_por_mes(itens):
     grupos = defaultdict(list)
     for item in itens:
         data = parse_data(item.get("data_sicoob", ""))
@@ -108,7 +116,7 @@ def agrupar_por_mes(itens: list) -> dict:
     return grupos
 
 
-def ordenar_por_data(itens: list) -> list:
+def ordenar_por_data(itens):
     return sorted(
         itens,
         key=lambda x: parse_data(x.get("data_sicoob", "")) or datetime.min,
@@ -116,7 +124,7 @@ def ordenar_por_data(itens: list) -> list:
     )
 
 
-def ordenar_chaves_mes(chaves: list) -> list:
+def ordenar_chaves_mes(chaves):
     def parse_chave(chave):
         mes, ano = chave.split("-")
         return (int(ano), int(mes))
@@ -124,18 +132,26 @@ def ordenar_chaves_mes(chaves: list) -> list:
     return sorted(chaves, key=parse_chave)
 
 
-def criar_folha(wb, nome: str, itens: list, estilos: dict):
+def criar_folha(wb, nome, itens):
     ws = wb.create_sheet(title=nome)
-
-    aplicar_header(ws, estilos)
+    aplicar_header(ws)
 
     itens_ordenados = ordenar_por_data(itens)
+    total_sicoob = 0
+    total_erp = 0
 
     for i, item in enumerate(itens_ordenados, 2):
         valores = extrair_valores(item)
         for col, valor in enumerate(valores, 1):
             ws.cell(row=i, column=col, value=valor)
-        aplicar_linha(ws, i, estilos, item.get("conciliado", False), zebra=(i % 2 == 0))
+        aplicar_linha(ws, i, item.get("conciliado", False), zebra=(i % 2 == 0))
+
+        total_sicoob += item.get("valor_sicoob") or 0
+        total_erp += item.get("valor_erp") or 0
+
+    if itens_ordenados:
+        linha_total = len(itens_ordenados) + 2
+        aplicar_totais(ws, linha_total, total_sicoob, total_erp)
 
     aplicar_larguras(ws)
     ws.freeze_panes = "A2"
@@ -146,15 +162,14 @@ def criar_folha(wb, nome: str, itens: list, estilos: dict):
         ws.auto_filter.ref = f"A1:{ultima_coluna}{ultima_linha}"
 
 
-def criar_planilha(itens: list, caminho: str) -> str:
+def criar_planilha(itens, caminho):
     wb = Workbook()
-    estilos = criar_estilos()
 
     grupos = agrupar_por_mes(itens)
     chaves_ordenadas = ordenar_chaves_mes(list(grupos.keys()))
 
     for chave in chaves_ordenadas:
-        criar_folha(wb, chave, grupos[chave], estilos)
+        criar_folha(wb, chave, grupos[chave])
 
     if "Sheet" in wb.sheetnames:
         del wb["Sheet"]
@@ -163,7 +178,7 @@ def criar_planilha(itens: list, caminho: str) -> str:
     return caminho
 
 
-def filtrar_periodo(itens: list, mes: int, ano: int) -> list:
+def filtrar_periodo(itens, mes, ano):
     resultado = []
     for item in itens:
         data = parse_data(item.get("data_sicoob", ""))

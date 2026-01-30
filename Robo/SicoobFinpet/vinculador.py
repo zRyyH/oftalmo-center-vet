@@ -11,6 +11,10 @@ def normalizar_data(data_str: str) -> str | None:
     return data_str[:10]
 
 
+def filtrar_brands_finpet(brands: list) -> list:
+    return [b for b in brands if b.get("gateway") == "FINPET"]
+
+
 def filtrar_sicoob(sicoob: list, brands: list) -> list:
     infos = [b.get("info") for b in brands if b.get("info")]
     return [
@@ -34,11 +38,15 @@ def buscar_finpet_correspondentes(data_sicoob: str, brand: str, finpet: list) ->
 
 def vincular(sicoob: list, finpet: list, brands: list) -> list:
     resultado = []
-    sicoob_filtrado = filtrar_sicoob(sicoob, brands)
+
+    # Filtra apenas brands com gateway FINPET
+    brands_finpet = filtrar_brands_finpet(brands)
+
+    sicoob_filtrado = filtrar_sicoob(sicoob, brands_finpet)
 
     for s in sicoob_filtrado:
         descricao = s.get("desc_inf_complementar", "")
-        brand = encontrar_bandeira(descricao, brands)
+        brand = encontrar_bandeira(descricao, brands_finpet)
 
         vinculo = {"sicoob": s, "finpet": []}
 

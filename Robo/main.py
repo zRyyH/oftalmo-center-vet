@@ -3,14 +3,17 @@ from FinpetSimplesvet import executar_finpet_lancamentos
 from SicoobReleases import executar_sicoob_releases
 from SicoobFinpet import executar_sicoob_finpet
 from SicoobFatura import executar_sicoob_fatura
+from SicoobStone import executar_sicoob_stone
 from service import get_data
 from pathlib import Path
 import json
 import os
 
 
+Path("./Stone").mkdir(exist_ok=True)
 Path("./Relatorios").mkdir(exist_ok=True)
 Path("./Saidas").mkdir(exist_ok=True)
+Path("./Entradas").mkdir(exist_ok=True)
 
 
 def limpar_tela():
@@ -26,6 +29,7 @@ def mostrar_menu():
     print("[3] Sicoob > Finpet")
     print("[4] Sicoob > Lançamentos")
     print("[5] Fatura Cartão De Credito")
+    print("[6] Sicoob > Stone")
     print("[0] Sair")
     print("=" * 40)
 
@@ -81,6 +85,12 @@ def main():
             executar_sicoob_fatura,
             ["sicoob", "releases"],
             "Fatura Cartão De Credito",
+        ),
+        "6": (
+            "Sicoob > Stone",
+            executar_sicoob_stone,
+            ["sicoob", "brands"],
+            "Sicoob Stone",
         ),
     }
 
